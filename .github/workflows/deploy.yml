@@ -104,7 +104,7 @@ jobs:
               docker start postgres-exercicio >/dev/null || true
             else
               docker run -d \
-                --name postgres-exercicio \
+                --name $DB_HOST" \
                 --network rede \
                 --restart unless-stopped \
                 -e POSTGRES_DB="$DB_NAME" \

@@ -118,7 +118,7 @@ jobs:
               --name "$PROJECT_NAME" \
               --network rede \
               --restart unless-stopped \
-              -p 8080:8080 \
+              -p 8000:8000 \
               -e DB_HOST="$DB_HOST" \
               -e DB_PORT="$DB_PORT" \
               -e DB_NAME="$DB_NAME" \

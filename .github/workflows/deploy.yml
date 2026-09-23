@@ -54,7 +54,7 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.PROJECT_NAME }}-ci:${{ github.sha }}
 
-      - name: Deploy application
+            - name: Deploy application
         uses: appleboy/ssh-action@v1
         env:
           IMAGE_NAME: ${{ env.DOCKERHUB_USERNAME }}/${{ env.PROJECT_NAME }}-ci:${{ github.sha }}
@@ -72,16 +72,7 @@ jobs:
           key: ${{ secrets.KEY_TEST }}
           port: 22
 
-          envs: >-
-            IMAGE_NAME,
-            DOCKERHUB_USERNAME,
-            DOCKERHUB_TOKEN,
-            PROJECT_NAME,
-            DB_HOST,
-            DB_PORT,
-            DB_NAME,
-            DB_USER,
-            DB_PASSWORD
+          envs: IMAGE_NAME,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN,PROJECT_NAME,DB_HOST,DB_PORT,DB_NAME,DB_USER,DB_PASSWORD
 
           script: |
             set -e
@@ -96,15 +87,16 @@ jobs:
             docker network prune --force
 
             echo "Available disk space:"
+            df -h
 
             docker network inspect rede >/dev/null 2>&1 || \
               docker network create rede
 
-            if docker container inspect postgres-exercicio >/dev/null 2>&1; then
-              docker start postgres-exercicio >/dev/null || true
+            if docker container inspect "$DB_HOST" >/dev/null 2>&1; then
+              docker start "$DB_HOST" >/dev/null 2>&1 || true
             else
               docker run -d \
-                --name $DB_HOST" \
+                --name "$DB_HOST" \
                 --network rede \
                 --restart unless-stopped \
                 -e POSTGRES_DB="$DB_NAME" \
@@ -114,14 +106,20 @@ jobs:
                 postgres
             fi
 
+            echo "Waiting for PostgreSQL..."
+
+            until docker exec "$DB_HOST" \
+              pg_isready -U "$DB_USER" -d "$DB_NAME" >/dev/null 2>&1
+            do
+              sleep 2
+            done
+
             echo "$DOCKERHUB_TOKEN" | \
               docker login \
                 --username "$DOCKERHUB_USERNAME" \
                 --password-stdin
 
             docker pull "$IMAGE_NAME"
-
-            docker rm -f "$PROJECT_NAME" 2>/dev/null || true
 
             docker run -d \
               --name "$PROJECT_NAME" \
@@ -134,3 +132,6 @@ jobs:
               -e DB_USER="$DB_USER" \
               -e DB_PASSWORD="$DB_PASSWORD" \
               "$IMAGE_NAME"
+
+            echo "Running containers:"
+            docker ps

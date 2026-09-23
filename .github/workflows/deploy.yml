@@ -106,13 +106,6 @@ jobs:
                 postgres
             fi
 
-            echo "Waiting for PostgreSQL..."
-
-            until docker exec "$DB_HOST" \
-              pg_isready -U "$DB_USER" -d "$DB_NAME" >/dev/null 2>&1
-            do
-              sleep 2
-            done
 
             echo "$DOCKERHUB_TOKEN" | \
               docker login \

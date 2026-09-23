@@ -86,6 +86,17 @@ jobs:
           script: |
             set -e
 
+            echo "Removing previous application..."
+            docker rm -f "$PROJECT_NAME" 2>/dev/null || true
+
+            echo "Cleaning unused Docker resources..."
+            docker container prune --force
+            docker image prune --all --force
+            docker builder prune --all --force
+            docker network prune --force
+
+            echo "Available disk space:"
+
             docker network inspect rede >/dev/null 2>&1 || \
               docker network create rede
 

@@ -102,8 +102,8 @@ jobs:
                 -e POSTGRES_DB="$DB_NAME" \
                 -e POSTGRES_USER="$DB_USER" \
                 -e POSTGRES_PASSWORD="$DB_PASSWORD" \
-                -v postgres-exercicio-data:/var/lib/postgresql/data \
-                postgres
+                -v postgres-exercicio-data:/var/lib/postgresql \
+                postgres:18
             fi
 
 
@@ -118,7 +118,7 @@ jobs:
               --name "$PROJECT_NAME" \
               --network rede \
               --restart unless-stopped \
-              -p 8000:8000 \
+              -p 8080:8080 \
               -e DB_HOST="$DB_HOST" \
               -e DB_PORT="$DB_PORT" \
               -e DB_NAME="$DB_NAME" \

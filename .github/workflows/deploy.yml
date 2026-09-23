@@ -54,7 +54,7 @@ jobs:
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/${{ env.PROJECT_NAME }}-ci:${{ github.sha }}
 
-            - name: Deploy application
+      - name: Deploy application
         uses: appleboy/ssh-action@v1
         env:
           IMAGE_NAME: ${{ env.DOCKERHUB_USERNAME }}/${{ env.PROJECT_NAME }}-ci:${{ github.sha }}

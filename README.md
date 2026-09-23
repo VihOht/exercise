@@ -8,6 +8,19 @@ docker run -d --name postgres-exercicio -e POSTGRES_DB=exercicio -e POSTGRES_USE
 docker run -p 8080:8080 -e DB_USER=usuario -e DB_HOST=postgres-exercicio -e DB_PASSWORD=senha -e DB_NAME=exercicio --network reder -name exercicio exercicio
 
 
+--
+DOCKERHUB_USERNAME
+DOCKERHUB_TOKEN
+PROJECT_NAME
+HOST_TEST
+KEY_TEST
+DB_NAME
+DB_USER
+DB_PASSWORD
+--
+
+
+
 ## Adidicionar dependências
 
 ```xml
